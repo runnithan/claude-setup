@@ -1,0 +1,26 @@
+{
+  "$schema": "https://www.schemastore.org/claude-code-plugin-manifest.json",
+  "name": "claude-setup",
+  "version": "0.1.0",
+  "description": "Portable Claude Code extensions — slash commands, subagents, and skills. Hooks and the transcript→lessons pipeline ship via the copy-into-.claude model (see README); this plugin is the lightweight, auto-updating path for the commands/agents/skills.",
+  "author": {
+    "name": "runnithan",
+    "url": "https://github.com/runnithan"
+  },
+  "homepage": "https://github.com/runnithan/claude-setup",
+  "license": "MIT",
+  "keywords": ["claude-code", "config", "subagents", "skills"],
+  "commands": [
+    "./.claude/commands/extract-lessons.md",
+    "./.claude/commands/extract-social-lessons.md",
+    "./.claude/commands/consolidate-lessons.md",
+    "./.claude/commands/test.md",
+    "./.claude/commands/review-pr.md",
+    "./.claude/commands/optimise.md",
+    "./.claude/commands/fact-check.md",
+    "./.claude/commands/revise-claude-md.md",
+    "./.claude/commands/ralph-loop.md",
+    "./.claude/commands/ralph-help.md",
+    "./.claude/commands/cancel-ralph.md"
+  ]
+}

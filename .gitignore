@@ -1,0 +1,19 @@
+.venv/
+.venv-linux/
+__pycache__/
+*.pyc
+.python-version
+
+# Machine-local Claude Code settings (personal permission grants / overrides).
+# This is the per-machine layer and must never be committed. See
+# settings.local.json.example for the format.
+settings.local.json
+
+# GSD install artifacts — installed via `npx get-shit-done-cc`, not vendored. See IMPLEMENT.md.
+get-shit-done/
+gsd-file-manifest.json
+
+# Auto-updater run log
+transcripts/.update_urls.log
+transcripts/.pipeline.log
+transcripts/.last_run

@@ -1,0 +1,8 @@
+{
+  "// purpose": "Machine-local Claude Code settings — personal permission grants and per-machine overrides. Copy to settings.local.json (gitignored) and edit. Portable, team-wide rules belong in settings.json instead; this file is for grants specific to YOUR machine/account that shouldn't ship in the public repo.",
+  "permissions": {
+    "allow": [
+      "Bash(your-machine-specific-tool:*)"
+    ]
+  }
+}

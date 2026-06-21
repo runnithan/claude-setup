@@ -1,0 +1,51 @@
+name: validate
+
+# Validates the config artifacts so a broken hook or malformed settings file is
+# caught here instead of after it's been copied into a project. A single JSON
+# syntax error in settings.json silently disables ALL hooks, so this gate matters.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Validate JSON syntax (incl. .example templates)
+        run: |
+          fail=0
+          while IFS= read -r f; do
+            if ! python -c "import json,sys; json.load(open(sys.argv[1], encoding='utf-8'))" "$f"; then
+              echo "::error file=$f::invalid JSON"
+              fail=1
+            fi
+          done < <(git ls-files '*.json' '*.json.example')
+          exit $fail
+
+      - name: Validate settings.json against the Claude Code schema
+        continue-on-error: true # advisory: the public schema can lag new keys
+        run: |
+          pip install --quiet check-jsonschema
+          check-jsonschema --schemafile https://json.schemastore.org/claude-code-settings.json settings.json
+
+      - name: Shell hooks — syntax check + shellcheck
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck
+          mapfile -t sh < <(git ls-files '*.sh')
+          if [ ${#sh[@]} -gt 0 ]; then
+            bash -n "${sh[@]}"          # hard gate: syntax errors fail the build
+            shellcheck -S warning "${sh[@]}" || true   # advisory: style warnings
+          fi
+
+      - name: Python syntax check
+        run: git ls-files '*.py' | xargs -r python -m py_compile
+
+      - name: Node hook syntax check
+        run: git ls-files '*.js' | xargs -r -n1 node --check

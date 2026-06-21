@@ -1,0 +1,20 @@
+{
+  "// purpose": "Project-scoped MCP servers for this config's workflows. Copy to .mcp.json (committed per-project) and keep only the servers that project actually uses — an unused server just costs context. After copying, run /mcp in Claude Code to authenticate each one. Endpoints below are the documented remote servers as of 2026-06; verify against each provider's current docs before relying on them.",
+  "mcpServers": {
+    "context7": {
+      "// use": "Up-to-date library/package docs (referenced in CLAUDE.md). Optionally add an apiKey header for higher rate limits.",
+      "type": "http",
+      "url": "https://mcp.context7.com/mcp"
+    },
+    "github": {
+      "// use": "PRs, branches, issues (see references/integrations.md). Auth via /mcp (OAuth or PAT).",
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/"
+    },
+    "atlassian": {
+      "// use": "Jira + Confluence (see references/integrations.md). Auth via /mcp (OAuth).",
+      "type": "sse",
+      "url": "https://mcp.atlassian.com/v1/sse"
+    }
+  }
+}

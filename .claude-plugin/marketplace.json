@@ -1,0 +1,17 @@
+{
+  "$schema": "https://www.schemastore.org/claude-code-marketplace.json",
+  "name": "claude-setup",
+  "owner": {
+    "name": "runnithan",
+    "url": "https://github.com/runnithan"
+  },
+  "plugins": [
+    {
+      "name": "claude-setup",
+      "source": "./",
+      "version": "0.1.0",
+      "description": "Portable Claude Code extensions: slash commands, subagents, and skills.",
+      "category": "workflow"
+    }
+  ]
+}
