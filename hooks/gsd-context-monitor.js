@@ -54,8 +54,12 @@ process.stdin.on('end', () => {
     const metrics = JSON.parse(fs.readFileSync(metricsPath, 'utf8'));
     const now = Math.floor(Date.now() / 1000);
 
-    // Ignore stale metrics
-    if (metrics.timestamp && (now - metrics.timestamp) > STALE_SECONDS) {
+    // Treat metrics without a usable timestamp as expired. A missing or
+    // non-numeric timestamp means the bridge file is stale or malformed; if we
+    // accepted it we'd keep emitting warnings off frozen data forever. Only act
+    // on a fresh timestamp within the staleness window.
+    const ts = Number(metrics.timestamp);
+    if (!Number.isFinite(ts) || (now - ts) > STALE_SECONDS) {
       process.exit(0);
     }
 
@@ -126,9 +130,19 @@ process.stdin.on('end', () => {
           'starting new complex work.';
     }
 
+    // Prefer the event name the host actually sent in the payload (Claude Code
+    // provides `hook_event_name`; some hosts use `hookEventName`). Only fall
+    // back to inferring it from GEMINI_API_KEY when the payload doesn't carry
+    // it — that inference is a guess (Gemini calls this event "AfterTool",
+    // others "PostToolUse") and exists solely for hosts that omit the field.
+    const hookEventName =
+      data.hook_event_name ||
+      data.hookEventName ||
+      (process.env.GEMINI_API_KEY ? "AfterTool" : "PostToolUse");
+
     const output = {
       hookSpecificOutput: {
-        hookEventName: process.env.GEMINI_API_KEY ? "AfterTool" : "PostToolUse",
+        hookEventName,
         additionalContext: message
       }
     };

@@ -73,10 +73,17 @@ process.stdin.on('end', () => {
     const todosDir = path.join(claudeDir, 'todos');
     if (session && fs.existsSync(todosDir)) {
       try {
-        const files = fs.readdirSync(todosDir)
-          .filter(f => f.startsWith(session) && f.includes('-agent-') && f.endsWith('.json'))
+        // Prefer the agent todo file (name contains '-agent-'), but if Claude
+        // changes its todo-file naming and nothing matches, fall back to any
+        // session todo file so the current task still shows instead of silently
+        // vanishing. Newest by mtime wins in either case.
+        const sessionFiles = fs.readdirSync(todosDir)
+          .filter(f => f.startsWith(session) && f.endsWith('.json'))
           .map(f => ({ name: f, mtime: fs.statSync(path.join(todosDir, f)).mtime }))
           .sort((a, b) => b.mtime - a.mtime);
+
+        const agentFiles = sessionFiles.filter(f => f.name.includes('-agent-'));
+        const files = agentFiles.length > 0 ? agentFiles : sessionFiles;
 
         if (files.length > 0) {
           try {

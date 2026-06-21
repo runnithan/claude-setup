@@ -64,8 +64,32 @@ const child = spawn(process.execPath, ['-e', `
     latest = execSync('npm view get-shit-done-cc version', { encoding: 'utf8', timeout: 10000, windowsHide: true }).trim();
   } catch (e) {}
 
+  // Normalize before comparing so a leading 'v', stray whitespace, or a
+  // prerelease/build suffix doesn't trigger a false "update available". Compare
+  // numeric major.minor.patch components when both parse as semver; otherwise
+  // fall back to a trimmed string compare.
+  function normVer(v) {
+    return String(v == null ? '' : v).trim().replace(/^v/i, '');
+  }
+  function semverParts(v) {
+    const core = normVer(v).split(/[-+]/)[0]; // drop prerelease/build metadata
+    const m = core.match(/^(\\d+)\\.(\\d+)\\.(\\d+)$/);
+    return m ? [Number(m[1]), Number(m[2]), Number(m[3])] : null;
+  }
+  function isNewer(latestV, installedV) {
+    const a = semverParts(latestV);
+    const b = semverParts(installedV);
+    if (a && b) {
+      for (let i = 0; i < 3; i++) {
+        if (a[i] !== b[i]) return a[i] > b[i];
+      }
+      return false; // equal core versions -> not an update
+    }
+    return normVer(latestV) !== normVer(installedV);
+  }
+
   const result = {
-    update_available: latest && installed !== latest,
+    update_available: !!latest && isNewer(latest, installed),
     installed,
     latest: latest || 'unknown',
     checked: Math.floor(Date.now() / 1000)

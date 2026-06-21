@@ -55,6 +55,13 @@
       "Read(**/.ssh/**)",
       "Read(**/.aws/**)",
       "Read(**/*service-account*.json)",
+      "Bash(cat *.env*)",
+      "Bash(cat *.pem)",
+      "Bash(cat *.key)",
+      "Bash(cat *.p12)",
+      "Bash(cat *id_rsa*)",
+      "Bash(cat *service-account*.json)",
+      "Bash(cat *.ssh/*)",
       "Bash(git push --force:*)",
       "Bash(git push -f:*)"
     ]

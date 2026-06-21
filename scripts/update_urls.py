@@ -47,6 +47,9 @@ def say(msg: str = "") -> None:
 
 def write_log() -> None:
     stamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    # On a fresh clone transcripts/ may not exist yet; create it so the first
+    # run can write its log instead of crashing on a missing parent dir.
+    LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
     with open(LOG_FILE, "a", encoding="utf-8") as f:
         f.write(f"\n===== {stamp} =====\n")
         f.write("\n".join(_run_log) + "\n")
@@ -104,7 +107,17 @@ def resolve_channel_id(vid: str) -> str | None:
     except Exception as e:
         say(f"  ! could not fetch watch page for {vid}: {e}")
         return None
-    m = CHANNEL_ID_RE.search(html)
+    # The channelId/externalChannelId JSON keys are an undocumented detail of
+    # YouTube's watch-page markup and can change without notice. Wrap the scrape
+    # so a markup change degrades to "skip this creator" instead of crashing the
+    # whole run; the next run retries automatically.
+    try:
+        m = CHANNEL_ID_RE.search(html)
+    except Exception as e:
+        say(f"  ! channel-id scrape failed for {vid} (YouTube markup change?): {e}")
+        return None
+    if not m:
+        say(f"  ! no channel id found in watch page for {vid} (YouTube markup change?)")
     return m.group(1) if m else None
 
 
@@ -131,13 +144,22 @@ def main() -> int:
     # All video IDs already in the file (for global dedup).
     existing_ids = {vid for ln in lines if (vid := video_id(ln))}
 
-    # Find section header line numbers: `# Heading` lines that have at least
-    # one video URL before the next heading. The top "instructions" comments
-    # have no URLs under them, so they're naturally skipped.
+    # Find section header line numbers. A creator header is a `#` line that
+    # starts a section: in urls.txt every `# Creator` heading is preceded by a
+    # blank line (or sits at the top of the file). Requiring that blank-line
+    # boundary stops an inline `#` comment placed *between* a creator's URLs
+    # from being mistaken for a new header and splitting the section (which
+    # would append discovered URLs under the wrong creator). The top
+    # "instructions" comments have no URLs under them, so they're filtered out
+    # later by the per-section video-ID check.
     headers: list[tuple[int, str]] = []
     for i, ln in enumerate(lines):
-        if ln.strip().startswith("#"):
-            headers.append((i, ln.strip().lstrip("#").strip()))
+        if not ln.strip().startswith("#"):
+            continue
+        prev_blank = i == 0 or not lines[i - 1].strip()
+        if not prev_blank:
+            continue  # inline/comment line within a section, not a header
+        headers.append((i, ln.strip().lstrip("#").strip()))
 
     # Insertions keyed by the line index to insert *after* (end of section).
     insertions: dict[int, list[str]] = {}
