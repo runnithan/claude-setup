@@ -8,7 +8,19 @@ handles/affiliations change (verified 2026-06, sourced; re-check before relying 
 Format: `- Name — role — @handle (X) / blog`. Lines starting with `#` are ignored.
 Tiers reflect **recoverability**: open blogs are read first-hand; X-only voices are
 best-effort (X login-walls direct fetches, so they only land when reblogged or
-mirrored).
+mirrored). Beyond people, the **Canonical / non-person sources** tier below tracks the
+primary places Claude Code's own behaviour is documented — scout these every run; they
+often carry a lesson before any creator covers it.
+
+## Canonical / non-person sources (scout every run; primary, highest signal)
+Not people — the first places a new command / flag / hook / gotcha shows up. Same lesson bar
+as the voices: a concrete, actionable thing to do or stop doing, grounded in a real quoted
+line with its URL. A bare feature announcement is *not* a lesson — extract the **usage
+implication** ("now do X instead of Y"), or drop it.
+- Claude Code changelog / release notes — new commands, flags, hooks each release — https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md
+- Claude Code docs (esp. the "best practices" page) — Anthropic's canonical guidance, continuously updated — https://docs.claude.com/en/docs/claude-code
+- `anthropics/claude-code` GitHub issues & discussions — confirmed behaviours, gotchas, team-suggested workarounds (the richest "never do X" source) — https://github.com/anthropics/claude-code/issues
+- Hacker News — threads on CC releases surface non-obvious community workflows (queryable via Algolia: https://hn.algolia.com/api/v1/search?query=claude%20code) — https://news.ycombinator.com
 
 ## Tier 1 — open publishers (scout every run; these reliably deliver)
 - Simon Willison — Datasette/`llm` creator; prolific LLM-tooling blogger — @simonw / https://simonwillison.net
@@ -30,6 +42,15 @@ mirrored).
 - swyx (Shawn Wang) — Latent Space; podcast/essays, agentic-general — @swyx / https://latent.space
 - Indragie Karunaratne — indie macOS dev; shipped an app built entirely by Claude Code — @indragie / https://www.indragie.com/blog
 
+## Agentic-general / adjacent (transferable — open blogs, lower Claude-Code hit rate)
+Not Claude-Code-specific, but their agentic-coding and LLM-eval lessons transfer (several of
+this repo's own lessons — skill evals, autonomous loops — came from exactly this kind of
+source). Handles/URLs below are best-effort — re-check before relying.
+- Thorsten Ball — works on Amp (Sourcegraph); deep agentic-coding essays — @thorstenball / https://registerspill.thorstenball.com
+- Steve Yegge — Sourcegraph; long-form agentic-coding essays ("Cheating Is All You Need") — @Steve_Yegge / https://sourcegraph.com/blog
+- Hamel Husain — LLM evals & ops; "evals are all you need" — @HamelHusain / https://hamel.dev
+- Eugene Yan — applied ML / LLM eval & ops (Amazon) — @eugeneyan / https://eugeneyan.com
+
 ## Codex / OpenAI
 Dedicated Codex voices are still a small, early cohort — mostly OpenAI insiders and the
 official channels. Substantive *independent* Codex commentary mostly lives inside broader
@@ -43,5 +64,5 @@ agentic-coding coverage (Simon Willison and swyx above both cover Codex — Will
 
 <!-- Considered and left OFF (add only if Tier 1 dries up):
      - Barry Zhang (@barry_zyj), Erik Schluntz (@ErikSchluntz) — Anthropic, but agents/Skills-general, not Claude-Code-usage tips.
-     - Thorsten Ball (Amp), Steve Yegge (Sourcegraph), Kenton Varda (one case study) — agentic-general.
+     - Kenton Varda — one case study only — agentic-general.
      NOT Claude Code (rival tools, do not add): Michael Truell (Cursor), Saoud Rizwan (Cline), Scott Wu (Devin/Cognition), Paul Gauthier (Aider), Andrej Karpathy (Anthropic pre-training, not Claude Code). -->
