@@ -50,6 +50,8 @@ source). Handles/URLs below are best-effort — re-check before relying.
 - Steve Yegge — Sourcegraph; long-form agentic-coding essays ("Cheating Is All You Need") — @Steve_Yegge / https://sourcegraph.com/blog
 - Hamel Husain — LLM evals & ops; "evals are all you need" — @HamelHusain / https://hamel.dev
 - Eugene Yan — applied ML / LLM eval & ops (Amazon) — @eugeneyan / https://eugeneyan.com
+- Kent Beck — TDD/XP creator; "augmented coding" (agentic TDD with agents) essays — @KentBeck / https://tidyfirst.substack.com
+- Thoughtworks "Exploring Gen AI" — Birgitta Böckeler & co. (on Martin Fowler's site); evidence-based memos on AI-assisted engineering — https://martinfowler.com/articles/exploring-gen-ai.html
 
 ## Codex / OpenAI
 Dedicated Codex voices are still a small, early cohort — mostly OpenAI insiders and the
