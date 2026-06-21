@@ -162,4 +162,4 @@ Active lessons learned from transcripts about improving Claude Code usage. Gener
 
 ## Last consolidation run
 
-2026-06-21 — /consolidate-lessons: 1 merged (manage-goals-not-terminals → agent-view-native-orchestration-ui), 0 pruned. 103 active lessons; archive otherwise confirmed signal-dense (no other genuine redundancy among 104).
+2026-06-21 — /consolidate-lessons: 1 merged (manage-goals-not-terminals → agent-view-native-orchestration-ui), 0 pruned. 100 active lessons; archive otherwise confirmed signal-dense (no other genuine redundancy found across the active set).
