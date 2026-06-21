@@ -62,5 +62,12 @@ jobs:
       - name: Public-mirror leak gate (build sanitized snapshot, hard-fail on any leak)
         # Runs publish.sh in dry-run (no --push): builds the sanitized snapshot,
         # checks the allowlist, and greps it against scripts/forbidden-patterns.txt.
-        # This catches a leak on PR — before it can be published.
-        run: bash scripts/publish.sh
+        # This catches a leak on PR — before it can be published. Only meaningful in
+        # the private source repo; publish.sh is stripped from the public mirror, so
+        # this step is a no-op there.
+        run: |
+          if [ -f scripts/publish.sh ]; then
+            bash scripts/publish.sh
+          else
+            echo "scripts/publish.sh not present — this is the public mirror; leak gate not applicable. Skipping."
+          fi
