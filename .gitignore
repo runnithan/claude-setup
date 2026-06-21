@@ -17,3 +17,18 @@ gsd-file-manifest.json
 transcripts/.update_urls.log
 transcripts/.pipeline.log
 transcripts/.last_run
+
+# Secrets — never commit. The deny-list in settings.json also blocks reading these,
+# but ignoring them keeps an accidental `git add` from ever staging one.
+.env
+*.env
+.env.*
+*.pem
+*.key
+*.p12
+id_rsa
+*service-account*.json
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db

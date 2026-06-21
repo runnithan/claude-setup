@@ -1,18 +1,19 @@
 # Project Structure
 
-This repo is a portable Claude Code config, copied into a project as its `.claude/` folder (see [README.md](../README.md)).
+This repo is a standalone Claude Code hub you run *from*, kept alongside your projects rather than copied into each one (see [README.md](../README.md)). You mine lessons here, and `/optimise` reaches out to improve your *other* projects' `.claude/` setups in place. (Copying the repo into a project's own `.claude/` is the advanced/plugin exception — see the README's "Using it inside another project" section.)
 
 ```
 claude-setup/
   CLAUDE.md                 # project instructions (curated — see lessons/README.md)
-  IMPLEMENT.md              # third-party tools to install fresh per project (GSD, Ralph)
-  README.md                 # how to copy this repo into a project's .claude/
+  IMPLEMENT.md              # optional third-party tools to install into the hub or a target project (GSD, Ralph)
+  README.md                 # how to run the hub (and the advanced copy-into-.claude path)
   settings.json             # shared Claude Code settings (hooks, permissions)
   settings.local.json       # machine-local settings (not portable)
   package.json              # JS deps for hooks
   pyproject.toml / uv.lock  # Python deps for scripts/ (youtube-transcript-api)
 
-  .claude/commands/         # slash commands (/extract-lessons, /pr, /ticket, /test, ...)
+  .claude-plugin/           # plugin manifest (plugin.json) — the auto-updating commands/agents/skills path
+  .claude/commands/         # slash commands (/extract-lessons, /optimise, /test, ...)
   agents/                   # custom subagent definitions (backend-dev, frontend-dev, qa,
                             #   code-reviewer, code-simplifier, pr-test-analyzer)
   hooks/                    # lifecycle hook scripts (auto-format, security reminder,
@@ -33,4 +34,4 @@ claude-setup/
   projects/                 # per-project improvement notes (one folder per tracked project)
 ```
 
-Third-party tooling (GSD, Ralph) is installed fresh per project — see [IMPLEMENT.md](../IMPLEMENT.md). Its generated files (`get-shit-done/`, `gsd-file-manifest.json`) stay uncommitted.
+Third-party tooling (GSD, Ralph) is installed separately — see [IMPLEMENT.md](../IMPLEMENT.md). Its generated files (`get-shit-done/`, `gsd-file-manifest.json`) stay uncommitted.

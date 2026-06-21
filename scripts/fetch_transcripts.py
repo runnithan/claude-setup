@@ -98,15 +98,32 @@ TRANSCRIPT_RETRIES = 1    # attempts per video (failures retry next run anyway)
 # spacing, 40 spread over several minutes is gentler than the old unspaced 25.
 # The block-counter breaker still stops early if throttling starts sooner.
 # Override with env var MAX_TRANSCRIPTS_PER_RUN.
-MAX_PER_RUN = int(os.environ.get("MAX_TRANSCRIPTS_PER_RUN", "40"))
+def _env_int(name: str, default: int) -> int:
+    """Parse an int env var, falling back to default on any invalid value so a
+    bad override can't crash the whole pipeline at import time."""
+    try:
+        return int(os.environ.get(name, default))
+    except (TypeError, ValueError):
+        return default
+
+
+def _env_float(name: str, default: float) -> float:
+    """Parse a float env var, falling back to default on any invalid value."""
+    try:
+        return float(os.environ.get(name, default))
+    except (TypeError, ValueError):
+        return default
+
+
+MAX_PER_RUN = _env_int("MAX_TRANSCRIPTS_PER_RUN", 40)
 
 # Inter-fetch spacing: sleep a randomised gap before each networked fetch so a
 # run is spread over minutes instead of one burst. The gap is *randomised* on
 # purpose — a fixed cadence is itself a bot fingerprint. Skipped videos (already
 # fetched / known no-transcript) don't reach this, so they cost no time. Tune or
 # disable via env (set FETCH_SLEEP_MAX=0 to turn spacing off).
-FETCH_SLEEP_MIN = float(os.environ.get("FETCH_SLEEP_MIN", "4"))
-FETCH_SLEEP_MAX = float(os.environ.get("FETCH_SLEEP_MAX", "8"))
+FETCH_SLEEP_MIN = _env_float("FETCH_SLEEP_MIN", 4)
+FETCH_SLEEP_MAX = _env_float("FETCH_SLEEP_MAX", 8)
 
 
 class TranscriptBlocked(Exception):
@@ -220,6 +237,23 @@ _NO_TRANSCRIPT_HEADER = (
 )
 
 
+def md_escape(text: str) -> str:
+    """Escape a title so it can't break a markdown table cell or a link label.
+
+    Handles pipes (column separators), the `]`/`)` that would close a link
+    `[label](url)`, and newlines (which would split the row). Other markdown is
+    left as-is — these are the characters that actually corrupt the index/ledger.
+    """
+    return (
+        text.replace("\\", "\\\\")
+        .replace("|", "\\|")
+        .replace("]", "\\]")
+        .replace(")", "\\)")
+        .replace("\r", " ")
+        .replace("\n", " ")
+    )
+
+
 def load_skipped_ids() -> set[str]:
     """Video IDs recorded in no-transcript-available.md — skipped on every run."""
     if not NO_TRANSCRIPT_FILE.exists():
@@ -234,8 +268,9 @@ def record_no_transcript(video_id: str, creator: str, title: str, reason: str):
         NO_TRANSCRIPT_FILE.write_text(_NO_TRANSCRIPT_HEADER, encoding="utf-8")
     date = datetime.now().strftime("%Y-%m-%d")
     url = f"https://www.youtube.com/watch?v={video_id}"
-    # Escape pipes so a title with "|" can't break the table.
-    safe_title = title.replace("|", "\\|")
+    # Escape markdown so a title with "|", "]", ")" or a newline can't break the
+    # table row or the link label.
+    safe_title = md_escape(title)
     row = f"| {date} | {creator} | [{safe_title}]({url}) | {reason} |\n"
     with open(NO_TRANSCRIPT_FILE, "a", encoding="utf-8") as f:
         f.write(row)
@@ -248,7 +283,17 @@ def fetch_page_metadata(video_id: str) -> tuple[str, str]:
     title = "Unknown Title"
 
     try:
-        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        # SOCS/CONSENT cookie skips YouTube's EU consent interstitial; without
+        # it the watch page 302s to consent.youtube.com and metadata extraction
+        # fails, mislabeling the video into the unknown-creator/ dir. Matches the
+        # opener headers in update_urls.py.
+        req = urllib.request.Request(
+            url,
+            headers={
+                "User-Agent": "Mozilla/5.0",
+                "Cookie": "SOCS=CAI; CONSENT=YES+1",
+            },
+        )
         with urllib.request.urlopen(req, timeout=20) as resp:
             html = resp.read().decode("utf-8", errors="ignore")
 
@@ -365,7 +410,8 @@ def rebuild_index():
         f.write("| Creator | Title | Date | ~Tokens | File |\n")
         f.write("|---------|-------|------|---------|------|\n")
         for creator, title, date, url, rel_path, wc, tokens in entries:
-            title_display = f"[{title}]({url})" if url else title
+            safe_title = md_escape(title)
+            title_display = f"[{safe_title}]({url})" if url else safe_title
             f.write(f"| {creator} | {title_display} | {date} | {tokens:,} | `{rel_path}` |\n")
 
     print(f"\nIndex updated: {index_path} ({len(entries)} entries, ~{total_tokens:,} tokens total)")
@@ -439,7 +485,10 @@ def process_video(url: str, index: int, total: int,
 
     ts = datetime.now().strftime("%Y%m%d")
     title_slug = slugify_title(title)
-    filename = f"{title_slug}_{ts}.txt"
+    # Include video_id so two videos with the same (or empty) slug on the same
+    # day get distinct filenames instead of overwriting each other.
+    prefix = f"{title_slug}_" if title_slug else ""
+    filename = f"{prefix}{video_id}_{ts}.txt"
     filepath = output_dir / filename
 
     with open(filepath, "w", encoding="utf-8") as f:
@@ -448,6 +497,11 @@ def process_video(url: str, index: int, total: int,
         f.write(f"# Fetched: {datetime.now().isoformat()}\n")
         f.write(f"# URL: https://www.youtube.com/watch?v={video_id}\n\n")
         f.write(text)
+
+    # Mark as fetched in-memory so a duplicate URL later in this same run is
+    # skipped rather than refetched/overwritten (existing_ids is rescanned from
+    # disk only at the start of a run).
+    existing_ids.add(video_id)
 
     word_count = len(text.split())
     tokens = estimate_tokens(word_count)

@@ -118,10 +118,12 @@ copy the keepers into `CLAUDE.md` yourself — that judgement step shouldn't be 
 ## Subagents & agent teams
 
 Subagents live in `agents/`. Read-only roles (`qa`, `code-reviewer`) are restricted to
-`Read/Bash/Glob/Grep` so they can't modify code. For multi-ticket or full-stack work, spawn a
-team (`team-lead` + `backend-dev`/`frontend-dev` + `qa`) — see the **Agent team guidance** in
-`CLAUDE.md`. Reserve teams for divisible, high-value work: parallel agents trade tokens (and
-your review attention) for wall-clock speed.
+`Read/Bash/Glob/Grep` so they can't modify code. For multi-ticket or full-stack work, your
+main session acts as the **team-lead** — the coordinator role that creates tickets and
+branches, reviews diffs, and merges — while spawning the dev/QA subagents (`backend-dev`,
+`frontend-dev`, `qa`) to do the work. There's no `team-lead.md` to spawn; it's the role you
+play. See the **Agent team guidance** in `CLAUDE.md`. Reserve teams for divisible, high-value
+work: parallel agents trade tokens (and your review attention) for wall-clock speed.
 
 ## Hooks
 

@@ -7,11 +7,25 @@ This hook checks for security patterns in file edits and warns about potential v
 import json
 import os
 import random
+import re
 import sys
+import tempfile
 from datetime import datetime
 
-# Debug log file
-DEBUG_LOG_FILE = "/tmp/security-warnings-log.txt"
+# Debug log file (use the OS temp dir for portability — /tmp doesn't exist on
+# Windows).
+DEBUG_LOG_FILE = os.path.join(tempfile.gettempdir(), "security-warnings-log.txt")
+
+
+def _safe_session_id(session_id):
+    """Sanitize a session id for safe use in a filename/path.
+
+    Strips anything that isn't an alphanumeric, dash, or underscore (which also
+    neutralizes path-traversal like '../') and caps the length. Falls back to
+    'default' if nothing usable remains.
+    """
+    cleaned = re.sub(r"[^A-Za-z0-9_-]", "", str(session_id))[:128]
+    return cleaned or "default"
 
 # Advisory mode (default): surface warnings but never block the edit. The
 # patterns below all have legitimate uses, so blocking them trains users to
@@ -58,8 +72,9 @@ SECURITY_PATTERNS = [
 
 
 def get_state_file(session_id):
-    """Get session-specific state file path."""
-    return os.path.expanduser(f"~/.claude/security_warnings_state_{session_id}.json")
+    """Get session-specific state file path (session_id sanitized for path use)."""
+    safe_id = _safe_session_id(session_id)
+    return os.path.expanduser(f"~/.claude/security_warnings_state_{safe_id}.json")
 
 
 def cleanup_old_state_files():

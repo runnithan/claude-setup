@@ -70,6 +70,9 @@ def _is_due(force: bool) -> bool:
 
 
 def _mark_ran():
+    """Stamp .last_run with 'now'. Called on completion (see run()), so the
+    24h gate counts from when a run finished rather than when it started."""
+    STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
     STATE_FILE.write_text(datetime.now().isoformat(), encoding="utf-8")
 
 
@@ -94,22 +97,44 @@ def run() -> None:
     # silent no-ops that never touch YouTube or spam the log.
     if not _is_due(force):
         return
-    _mark_ran()  # stamp at start so the ~24h counts from when this run began
+
+    # Ensure transcripts/ exists before opening the log (fresh clone safety).
+    LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
 
     with open(LOG_FILE, "a", encoding="utf-8") as logf:
         logf.write(f"\n===== {datetime.now():%Y-%m-%d %H:%M:%S} pipeline =====\n")
-        original = sys.stdout
-        sys.stdout = _Tee(original, logf)
+        original_out = sys.stdout
+        original_err = sys.stderr
+        # Tee both stdout AND stderr to the log so tracebacks / library errors
+        # are captured, not just normal output.
+        sys.stdout = _Tee(original_out, logf)
+        sys.stderr = _Tee(original_err, logf)
         try:
             print("--- step 1: discovering new URLs ---")
-            update_urls.main()
+            # Discovery is best-effort: a crash here must NOT abort the fetch
+            # step (we can still fetch transcripts for already-known URLs).
+            try:
+                rc = update_urls.main()
+                if rc:
+                    print(f"(discovery step returned non-zero code {rc})")
+            except Exception as e:
+                import traceback
+                print(f"(discovery step failed: {e}; continuing to fetch)")
+                traceback.print_exc()
             print("\n--- step 2: fetching transcripts ---")
             try:
                 fetch_transcripts.main()
             except SystemExit as e:  # fetch exits(1) when urls.txt is empty
                 print(f"(fetch step exited with code {e.code})")
         finally:
-            sys.stdout = original
+            sys.stdout = original_out
+            sys.stderr = original_err
+
+    # Stamp the run only AFTER it completes (rather than at the start): the 24h
+    # gate measures from a finished run, so an early crash no longer burns a full
+    # day of retries. Cadence intent is preserved — it's still "~once a day,
+    # measured from the last (completed) run", just anchored to completion.
+    _mark_ran()
 
 
 if __name__ == "__main__":

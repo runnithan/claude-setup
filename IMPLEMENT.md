@@ -1,12 +1,11 @@
 # IMPLEMENT.md
 
-What to install into a new project alongside this `claude-setup` config. These are third-party tools that update independently — install fresh from source instead of vendoring snapshots that go stale.
+Optional third-party tools that pair well with `claude-setup`. They update independently, so install them fresh from source instead of vendoring snapshots that go stale. Install them into the hub itself, or directly into a target project you're working in — both work.
 
-## Install order
+## What to install
 
-1. Copy this repo into the project's `.claude/` (see root [README.md](README.md))
-2. Install GSD
-3. Install Ralph (optional, for long autonomous loops)
+1. GSD — spec-driven planning + execution
+2. Ralph (optional) — autonomous loops for long, well-specified tasks
 
 ---
 

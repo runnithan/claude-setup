@@ -49,3 +49,18 @@ jobs:
 
       - name: Node hook syntax check
         run: git ls-files '*.js' | xargs -r -n1 node --check
+
+      - name: Validate shipped artifacts (agent/skill/command frontmatter + manifests)
+        run: python scripts/validate-artifacts.py
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Pipeline unit tests
+        run: uv run --with pytest pytest -q tests/
+
+      - name: Public-mirror leak gate (build sanitized snapshot, hard-fail on any leak)
+        # Runs publish.sh in dry-run (no --push): builds the sanitized snapshot,
+        # checks the allowlist, and greps it against scripts/forbidden-patterns.txt.
+        # This catches a leak on PR — before it can be published.
+        run: bash scripts/publish.sh

@@ -6,7 +6,7 @@ allowed-tools: ["Bash", "Glob", "Grep", "Read", "Task"]
 
 # Comprehensive PR Review
 
-Run a comprehensive pull request review using multiple specialized agents, each focusing on a different aspect of code quality.
+Run a comprehensive pull request review using the specialized agents that ship with this plugin, each focusing on a different aspect of code quality.
 
 **Review Aspects (optional):** "$ARGUMENTS"
 
@@ -19,11 +19,8 @@ Run a comprehensive pull request review using multiple specialized agents, each 
 
 2. **Available Review Aspects:**
 
-   - **comments** - Analyze code comment accuracy and maintainability
+   - **code** - General code review for project guidelines, bugs, and quality
    - **tests** - Review test coverage quality and completeness
-   - **errors** - Check error handling for silent failures
-   - **types** - Analyze type design and invariants (if new types added)
-   - **code** - General code review for project guidelines
    - **simplify** - Simplify code for clarity and maintainability
    - **all** - Run all applicable reviews (default)
 
@@ -35,11 +32,8 @@ Run a comprehensive pull request review using multiple specialized agents, each 
 4. **Determine Applicable Reviews**
 
    Based on changes:
-   - **Always applicable**: code-reviewer (general quality)
+   - **Always applicable**: code-reviewer (general quality, bugs, CLAUDE.md compliance)
    - **If test files changed**: pr-test-analyzer
-   - **If comments/docs added**: comment-analyzer
-   - **If error handling changed**: silent-failure-hunter
-   - **If types added/modified**: type-design-analyzer
    - **After passing review**: code-simplifier (polish and refine)
 
 5. **Launch Review Agents**
@@ -91,53 +85,37 @@ Run a comprehensive pull request review using multiple specialized agents, each 
 
 **Full review (default):**
 ```
-/pr-review-toolkit:review-pr
+/review-pr
 ```
 
 **Specific aspects:**
 ```
-/pr-review-toolkit:review-pr tests errors
-# Reviews only test coverage and error handling
+/review-pr tests
+# Reviews only test coverage
 
-/pr-review-toolkit:review-pr comments
-# Reviews only code comments
-
-/pr-review-toolkit:review-pr simplify
+/review-pr simplify
 # Simplifies code after passing review
 ```
 
 **Parallel review:**
 ```
-/pr-review-toolkit:review-pr all parallel
-# Launches all agents in parallel
+/review-pr all parallel
+# Launches all applicable agents in parallel
 ```
 
+The command is also addressable as `/claude-setup:review-pr` (the plugin is named `claude-setup`).
+
 ## Agent Descriptions:
-
-**comment-analyzer**:
-- Verifies comment accuracy vs code
-- Identifies comment rot
-- Checks documentation completeness
-
-**pr-test-analyzer**:
-- Reviews behavioral test coverage
-- Identifies critical gaps
-- Evaluates test quality
-
-**silent-failure-hunter**:
-- Finds silent failures
-- Reviews catch blocks
-- Checks error logging
-
-**type-design-analyzer**:
-- Analyzes type encapsulation
-- Reviews invariant expression
-- Rates type design quality
 
 **code-reviewer**:
 - Checks CLAUDE.md compliance
 - Detects bugs and issues
 - Reviews general code quality
+
+**pr-test-analyzer**:
+- Reviews behavioral test coverage
+- Identifies critical gaps
+- Evaluates test quality
 
 **code-simplifier**:
 - Simplifies complex code
@@ -158,7 +136,7 @@ Run a comprehensive pull request review using multiple specialized agents, each 
 **Before committing:**
 ```
 1. Write code
-2. Run: /pr-review-toolkit:review-pr code errors
+2. Run: /review-pr code
 3. Fix any critical issues
 4. Commit
 ```
@@ -166,7 +144,7 @@ Run a comprehensive pull request review using multiple specialized agents, each 
 **Before creating PR:**
 ```
 1. Stage all changes
-2. Run: /pr-review-toolkit:review-pr all
+2. Run: /review-pr all
 3. Address all critical and important issues
 4. Run specific reviews again to verify
 5. Create PR

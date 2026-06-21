@@ -1,8 +1,7 @@
 ---
 name: frontend-design
-description: Build web pages, components, landing pages, dashboards, or UI layouts. Use when asked to "build a page", "create a component", "design a landing page", "make a dashboard", or any frontend/UI implementation task. Generates distinctive, production-grade code with high design quality.
+description: Build web pages, components, landing pages, dashboards, or UI layouts. Use when asked to "build a page", "create a component", "design a landing page", "make a dashboard", or any frontend/UI implementation task.
 model: sonnet
-license: Complete terms in LICENSE.txt
 ---
 
 This skill guides creation of distinctive, production-grade frontend interfaces that avoid generic "AI slop" aesthetics. Implement real working code with exceptional attention to aesthetic details and creative choices.
@@ -58,3 +57,16 @@ When the user provides a screenshot, Figma link, or design reference:
 3. **Check references/** — if past designs exist in the `references/` directory alongside this skill, use them to understand the user's preferred aesthetic and maintain consistency
 
 This approach ensures brand consistency (same colors/fonts) while avoiding derivative layouts.
+
+## Gotchas
+
+Things this skill must NEVER do:
+
+- **Never use generic AI-generated aesthetics.** No purple/indigo gradients on white, no centered-hero → 3-column feature grid → footer, no cookie-cutter rounded-xl cards with shadows.
+- **Never use overused fonts.** Avoid Inter, Roboto, Space Grotesk, Arial, and system fonts. Pair a distinctive display font with a refined body font, loaded via Google Fonts with exact weights/styles.
+- **Never default to pure black (#000) or pure white (#fff)**, or to standard Tailwind palette stops. Specify exact hex values committed to a cohesive theme.
+- **Never settle for the first idea.** It is the statistical mode — discard it before choosing fonts, colors, or layout. Don't repeat a choice used in the last 5 designs.
+- **Never default backgrounds to flat solid colors.** Add atmosphere and depth (gradient meshes, noise, texture, layered transparency, shadows).
+- **Never use "Lorem ipsum" or generic copy.** Use realistic, domain-specific placeholder content.
+- **Never replicate a reference design pixel-for-pixel.** Extract only colors and typography as constraints; build an original layout.
+- **Never mismatch complexity to the vision.** Maximalist designs need elaborate code; minimalist designs need restraint and precision — not under- or over-built output.

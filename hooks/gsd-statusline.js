@@ -102,6 +102,14 @@ process.stdin.on('end', () => {
       } catch (e) {}
     }
 
+    // Truncate overly long task text so a long todo can't wreck the statusline
+    // (push the dir/context off the line or wrap). Cap to a sensible width and
+    // append an ellipsis when trimmed.
+    const TASK_MAX_LEN = 60;
+    if (task.length > TASK_MAX_LEN) {
+      task = task.slice(0, TASK_MAX_LEN - 1).trimEnd() + '…';
+    }
+
     // Output
     const dirname = path.basename(dir);
     if (task) {

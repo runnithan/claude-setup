@@ -1,6 +1,7 @@
 # claude-setup
 
 [![validate](https://github.com/runnithan/claude-setup/actions/workflows/validate.yml/badge.svg)](https://github.com/runnithan/claude-setup/actions/workflows/validate.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 **Turn the [Claude Code](https://claude.com/claude-code) creators you follow into a lessons library your agent actually uses.**
 
@@ -16,6 +17,8 @@ into each repo. Point it at your favourite voices; make it yours.
 ## Quickstart (60 seconds)
 
 It's a hub you run *from*, not a config you install into each project:
+
+**Requirements:** Claude Code, [`uv`](https://docs.astral.sh/uv/), Python 3.x.
 
 ```bash
 git clone https://github.com/runnithan/claude-setup
@@ -58,8 +61,10 @@ practitioners you actually trust:
 | `/optimise <project>` | audit a project's setup against your lessons and apply fixes one at a time |
 | `/review-pr` | multi-agent review of a pull request |
 | `/test [suite]` | run the project's tests / lint / build |
-| `/pr`, `/ticket` | GitHub PR + Jira ticket flow |
+| `/pr`, `/ticket` | GitHub PR + Jira ticket flow [†](#pr-ticket-note) |
 | `/fact-check` | verify claims in content against real sources |
+
+<a id="pr-ticket-note"></a>† `/pr` and `/ticket` require the GitHub and Jira MCP servers (see [`.mcp.json.example`](.mcp.json.example)) and are **not bundled in the plugin** — they're available when you run the repo as a hub with those servers configured.
 
 Plus subagents (`code-reviewer`, `qa`, `backend-dev`, `frontend-dev`, `code-simplifier`,
 `pr-test-analyzer` — read-only roles tool-restricted), lifecycle hooks (an advisory security
