@@ -66,6 +66,21 @@ its tracking files on first use). This is the main way to fold lessons back into
 For a single high-value rule you can also promote it into a `CLAUDE.md` by hand — kept
 deliberate, since `CLAUDE.md` loads every turn. See [`lessons/README.md`](lessons/README.md).
 
+> **Tip — what `/optimise` keeps per project.** Each `projects/<name>/` folder builds up a
+> small set of files so audits compound instead of starting from scratch. `/optimise`
+> maintains them for you:
+> - **`current.md`** — a factual snapshot of that project's Claude Code setup, so the next
+>   audit diffs against it instead of re-investigating from zero.
+> - **`improvements.md`** — the *open* backlog: which lessons apply to this project and why.
+> - **`applied-improvements.md`** — the ledger of what's already been done, so `/optimise`
+>   stops re-suggesting it (it moves items here once applied).
+> - **`habits.md`** — recommendations that are *yours* to do at the keyboard (a command to
+>   type, a discipline to keep) rather than a config change Claude can make — kept as a
+>   prioritised list so they don't clutter the config backlog.
+>
+> You don't create these by hand; `/optimise` writes the snapshot, folds new lessons into
+> the backlog, moves done items to the ledger, and routes keyboard-habit items to `habits.md`.
+
 ## Automate it (recommended)
 
 Run the whole loop on a schedule so your lessons stay current without you thinking about it.
