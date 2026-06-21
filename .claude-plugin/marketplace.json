@@ -9,7 +9,7 @@
     {
       "name": "claude-setup",
       "source": "./",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "description": "Portable Claude Code extensions: slash commands, subagents, and skills.",
       "category": "workflow"
     }
