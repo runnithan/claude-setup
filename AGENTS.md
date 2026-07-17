@@ -4,14 +4,19 @@ Codex reads this file the way Claude Code reads `CLAUDE.md`. This repo is the **
 (**Claude** Code + Co**dex**): you run it *from* here to mine agentic-coding lessons and to
 audit your other projects' agent setups in place.
 
-## Read CLAUDE.md first — it is the source of truth
+## CLAUDE.md is authoritative — read it first
 
 **The working rules are shared between both tools and live in [CLAUDE.md](CLAUDE.md).** Read it
-before touching anything. This file stays deliberately thin and does *not* restate those rules:
-duplicating them would create exactly the drift this repo is built to prevent. If a convention
-changes, it changes in `CLAUDE.md` only.
+before touching anything. Architecture, the transcript→lessons pipeline, Conventional Commits and
+the no-`Co-Authored-By` rule, CHANGELOG discipline, and the validation steps all live there and
+apply to Codex verbatim. They are deliberately **not** restated here — a second copy would drift,
+which is exactly what this repo is built to prevent. If a convention changes, it changes in
+`CLAUDE.md` only.
 
-Everything there applies to Codex verbatim. The load-bearing ones:
+The short safety net below is the one deliberate exception. Codex reads `AGENTS.md` but does not
+automatically read `CLAUDE.md`, so the rules where a miss is *catastrophic and unrecoverable* are
+mirrored here — and only those, because they effectively never change. **If this file and
+`CLAUDE.md` ever disagree, `CLAUDE.md` wins.**
 
 - **Never commit secrets.** `.env` files, private keys, and service-account JSON stay gitignored.
 - **Public mirror + leak-gate.** This private repo publishes a sanitized public mirror via
@@ -19,10 +24,6 @@ Everything there applies to Codex verbatim. The load-bearing ones:
   and hard-fails on any leak. Run `bash scripts/publish.sh` (dry run) before publishing.
 - **Never name a private project in `CHANGELOG.md`** — it is *not* in the scrub set, so a private
   name written there fails the leak gate. Describe the feature, not the project.
-- **Keep `CHANGELOG.md` current** in the same change, not batched later.
-- **Conventional Commits**, imperative and lowercase; commits are authored solely by the repo
-  owner (no `Co-Authored-By` lines).
-- **Validation before done:** `python3 scripts/validate-artifacts.py` and a `publish.sh` dry run.
 
 ## Codex-specific notes
 
