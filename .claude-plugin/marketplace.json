@@ -10,7 +10,7 @@
       "name": "claudex-setup",
       "source": "./",
       "version": "0.2.0",
-      "description": "Portable Claude Code extensions: slash commands, subagents, and skills.",
+      "description": "Portable agentic-coding extensions: slash commands, subagents, and skills for Claude Code, with /optimise auditing a project's Claude Code, Claude Design, or Codex setup.",
       "category": "workflow"
     }
   ]

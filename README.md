@@ -3,21 +3,28 @@
 [![validate](https://github.com/runnithan/claudex-setup/actions/workflows/validate.yml/badge.svg)](https://github.com/runnithan/claudex-setup/actions/workflows/validate.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-**Turn the [Claude Code](https://claude.com/claude-code) creators you follow into a lessons library your agent actually uses.**
+**Turn the agentic-coding creators you follow into a lessons library your agent actually uses —
+then audit your real projects against it, across [Claude Code](https://claude.com/claude-code)
+and [Codex](https://developers.openai.com/codex/).**
 
 You watch the tutorials, read the threads, star the gists — and the best tips evaporate.
-`claudex-setup` is a Claude Code config you run yourself: it mines those tips into
-**source-cited lessons from the creators *you* pick**, curates them, and audits your projects
-against them — alongside a battle-tested set of slash commands, subagents, and hooks.
+`claudex-setup` is a config you run yourself: it mines those tips into **source-cited lessons
+from the creators *you* pick**, curates them, and audits your projects against them — alongside
+a battle-tested set of slash commands, subagents, and hooks.
 
 Keep it as a **standalone repo alongside your projects** — you run it *from* here, and
-`/optimise` improves your other projects' Claude Code setups in place. You don't install it
-into each repo. Point it at your favourite voices; make it yours.
+`/optimise` improves your other projects' agent setups in place. You don't install it into each
+repo. Point it at your favourite voices; make it yours.
 
-> **Why "claudex"?** **Claude** Code + Co**dex**. The lessons library is Claude-Code-first, but
-> `/optimise` audits whichever agent tools a project actually uses — its Claude Code setup by
-> default, its Claude Design usage with `--design`, and its OpenAI Codex setup with `--codex` —
-> keeping one tracker per tool.
+> **Why "claudex"?** **Claude** Code + Co**dex**. `/optimise` audits whichever agent tools a
+> project actually uses — Claude Code by default, Claude Design with `--design`, OpenAI Codex
+> with `--codex` — keeping one tracker per tool. Working in this repo with Codex? Start at
+> [`AGENTS.md`](AGENTS.md), the Codex-side counterpart to [`CLAUDE.md`](CLAUDE.md).
+>
+> **Honest scope:** the lessons library is **Claude-Code-first** (it also mines a Codex/OpenAI
+> voice cluster, keeping what transfers to general agentic coding), and the commands, subagents,
+> and hooks are Claude Code artifacts. Codex is first-class in what this repo **audits and
+> tracks** — not a claim of tool parity.
 
 ## Quickstart (60 seconds)
 
