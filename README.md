@@ -7,6 +7,8 @@
 then audit your real projects against it, across [Claude Code](https://claude.com/claude-code)
 and [Codex](https://developers.openai.com/codex/).**
 
+![claudex-setup demo: /optimise proposing a source-cited change to approve](docs/demo.gif)
+
 You watch the tutorials, read the threads, star the gists — and the best tips evaporate.
 `claudex-setup` is a config you run yourself: it mines those tips into **source-cited lessons
 from the creators *you* pick**, curates them, and audits your projects against them — alongside
